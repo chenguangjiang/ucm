@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.EquipmentDao">
+    <resultMap id="equipmentMap" type="Equipment">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="ipadress" property="ipadress"></result>
+        <result column="software" property="software"></result>
+        <result column="status" property="status"></result>
+        <result column="remark" property="remark"></result>
+        <association property="machineroom" javaType="Machineroom">
+            <id column="mid" property="id"></id>
+            <result column="mname" property="name"></result>
+            <result column="mcapacity" property="capacity"></result>
+            <result column="mstatus" property="status"></result>
+        </association>
+    </resultMap>
+<select id="findAll" resultMap="equipmentMap">
+    select e.id,e.name,e.ipadress,e.software,e.status,e.remark,
+    m.id as mid,m.name as mname,m.capacity as mcapacity,m.status as mstatus from t_equipment e
+    left join t_machineroom m on machineId=m.id
+</select>
+    <insert id="save">
+            insert into t_equipment VALUES (#{id},#{name},#{ipadress},#{software},#{status},#{remark},#{machineroom.id,jdbcType=VARCHAR})
+    </insert>
+    <update id="update">
+        update t_equipment set name=#{name},ipadress=#{ipadress},software=#{software},status=#{status},remark=#{remark},
+        machineId=#{machineroom.id}
+        where id=#{id}
+    </update>
+    <delete id="delete">
+         delete from t_equipment WHERE id=#{id}
+    </delete>
+
+    <select id="findTotalCounts" resultType="Long">
+     select count(e.id) from t_equipment e
+    left join t_machineroom m on machineId=m.id
+    </select>
+    <select id="findByPage" resultMap="equipmentMap">
+ select e.id,e.name,e.ipadress,e.software,e.status,e.remark,
+    m.id as mid,m.name as mname,m.capacity as mcapacity,m.status as mstatus from t_equipment e
+    left join t_machineroom m on machineId=m.id
+    limit #{start},#{size}
+    </select>
+         <select id="findSearch" resultMap="equipmentMap">
+    select e.id,e.name,e.ipadress,e.software,e.status,e.remark,
+    m.id as mid,m.name as mname,m.capacity as mcapacity,m.status as mstatus from t_equipment e
+    left join t_machineroom m on machineId=m.id
+    <where>
+        <if test="searchOper=='eq'">
+            ${searchField}=#{searchString}
+        </if>
+        <if test="searchOper=='ne'">
+            ${searchField}!=#{searchString}
+        </if>
+        <if test="searchOper=='cn'">
+            ${searchField} like concat ('%',#{searchString},'%')
+        </if>
+    </where>
+
+     limit #{start},#{size}
+    </select>
+    <select id="findTotalCountsSearch" resultType="Long">
+         select count(e.id) from t_equipment e
+    left join t_machineroom m on machineId=m.id
+      <where>
+
+              <if test="searchOper=='eq'">
+                   ${searchField}=#{searchString}
+             </if>
+              <if test="searchOper=='ne'">
+                   ${searchField}!=#{searchString}
+             </if>
+             <if test="searchOper=='cn'">
+                  ${searchField} like concat ('%',#{searchString},'%')
+             </if>
+      </where>
+    </select>
+
+
+
+    <select id="findAllByRoomId" resultMap="equipmentMap">
+         select e.id,e.name,e.ipadress,e.software,e.status,e.remark,
+    m.id as mid,m.name as mname,m.capacity as mcapacity,m.status as mstatus from t_equipment e
+    left join t_machineroom m on machineId=m.id where machineId=#{machineroom.id}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.ExcelDataDao">
+<select id="findAll" resultType="TimetableData">
+    select * from t_timetable
+</select>
+    <insert id="save">
+        insert into t_timetable VALUES (#{id},#{weekscount},#{teacher},#{week},#{phases},
+        #{curriculum},#{classes},#{machineId})
+    </insert>
+</mapper>

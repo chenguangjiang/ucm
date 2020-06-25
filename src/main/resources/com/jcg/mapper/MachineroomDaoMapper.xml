@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.MachineroomDao">
+    <!--开启二级缓存-->
+    <cache type="com.jcg.cache.RedisCahe"/>
+    <resultMap id="machineMap" type="Machineroom">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="status" property="status"></result>
+        <result column="capacity" property="capacity"></result>
+       <association property="site" javaType="Site">
+           <id column="sid" property="id"></id>
+           <result column="sname" property="name"></result>
+       </association>
+    </resultMap>
+    <select id="findAll" resultMap="machineMap">
+     select m.id,m.name,m.capacity,m.status,s.id as sid,s.name as sname from t_machineroom m
+     left join t_site s on siteId=s.id
+    </select>
+
+    <insert id="save">
+        insert into t_machineroom VALUES (#{id},#{name},#{capacity},#{status},#{site.id})
+    </insert>
+    <update id="update">
+         UPDATE t_machineroom set name=#{name},capacity=#{capacity},status=#{status},siteId=#{site.id} where id=#{id}
+    </update>
+    <delete id="delete">
+        delete from t_machineroom where id=#{id}
+    </delete>
+
+
+
+    <select id="findTotalCounts" resultType="Long">
+ select count(m.id) from t_machineroom m
+    left join t_site s on siteId=s.id
+
+    </select>
+    <select id="findByPage" resultMap="machineMap">
+    select m.id,m.name,m.capacity,m.status,s.id as sid,s.name as sname from t_machineroom m
+     left join t_site s on siteId=s.id
+
+     limit #{start},#{size}
+    </select>
+
+    <select id="findSearch" resultMap="machineMap">
+        select m.id,m.name,m.capacity,m.status,s.id as sid,s.name as sname from t_machineroom m
+        left join t_site s on siteId=s.id
+        <where>
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+
+        limit #{start},#{size}
+    </select>
+    <select id="findTotalCountsSearch" resultType="Long">
+        select count(m.id) from t_machineroom m
+        left join t_site s on siteId=s.id
+        <where>
+
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+    </select>
+
+
+
+
+</mapper>

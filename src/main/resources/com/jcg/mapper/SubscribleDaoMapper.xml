@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.SubscribleDao">
+    <select id="findBySubscrible" resultType="Subscrible">
+        select id,time,week,room,phases,name,classes,curriculum from t_subscrible where week=#{week} and phases=#{phases} and room=#{room} and time=#{time}
+    </select>
+
+    <select id="findAll" resultType="Subscrible">
+         select id,time,week,room,phases,name,classes,curriculum from t_subscrible
+    </select>
+    <select id="findByName" resultType="Subscrible">
+        select id,time,week,room,phases,name,classes,curriculum from t_subscrible where name=#{name}
+    </select>
+    <select id="findById" resultType="Subscrible">
+        select id,time,week,room,phases,name,classes,curriculum from t_subscrible where id=#{id}
+    </select>
+    <insert id="save">
+       insert into t_subscrible VALUES (#{id},#{time},#{week},#{room},#{phases},
+       #{name},#{classes},#{curriculum})
+    </insert>
+    <delete id="delete">
+        delete from t_subscrible where 1=#{id}
+    </delete>
+    <delete id="remove">
+        delete from t_subscrible where id=#{id}
+    </delete>
+    <update id="update">
+        UPDATE t_subscrible set time=#{time}
+        ,week=#{week},room=#{room},phases=#{phases},name=#{name},
+        classes=#{classes},curriculum=#{curriculum} where id=#{id}
+    </update>
+</mapper>

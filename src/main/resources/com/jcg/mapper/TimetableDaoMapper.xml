@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.TimetableDao">
+    <resultMap id="timetableMap" type="Timetable">
+        <id column="id" property="id"></id>
+        <result column="weekscount" property="weekscount"></result>
+        <result column="phases" property="phases"></result>
+        <result column="week" property="week"></result>
+        <result column="curriculum" property="curriculum"></result>
+        <result column="teacher" property="teacher"></result>
+        <result column="classes" property="classes"></result>
+        <!--封装机房信息-->
+        <association property="machineroom" javaType="Machineroom">
+            <id column="mid" property="id"></id>
+            <result column="mname" property="name"></result>
+        </association>
+
+    </resultMap>
+    <select id="findAll" resultMap="timetableMap">
+        SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+         m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id
+    </select>
+    <select id="findAllByid" resultMap="timetableMap">
+        SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+        m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id WHERE machineId=#{machineroom.id}
+    </select>
+    <insert id="save">
+       insert into t_timetable VALUES (#{id},#{weekscount},#{teacher},#{week},#{phases},
+       #{classes},#{curriculum},#{machineroom.id})
+    </insert>
+    <update id="update">
+         UPDATE t_timetable set weekscount=#{weekscount},teacher=#{teacher}
+         ,week=#{week},phases=#{phases},classes=#{classes},curriculum=#{curriculum},
+         machineId=#{machineroom.id} where id=#{id}
+    </update>
+    <delete id="delete">
+        delete from t_timetable where id=#{id}
+    </delete>
+
+    <select id="findTotalCounts" resultType="Long">
+ select count(t.id) from t_timetable t
+        left join t_machineroom m on machineId=m.id
+    </select>
+    <select id="findByPage" resultMap="timetableMap">
+      SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+         m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id
+     limit #{start},#{size}
+    </select>
+
+
+    <select id="findSearch" resultMap="timetableMap">
+        SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+        m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id
+        <where>
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+
+        limit #{start},#{size}
+    </select>
+    <select id="findTotalCountsSearch" resultType="Long">
+        select count(t.id) from t_timetable t
+        left join t_machineroom m on machineId=m.id
+        <where>
+
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+    </select>
+    <select id="findByweekandmachine" resultMap="timetableMap">
+        SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+        m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id where week=#{week} and machineId=#{machineId}
+    </select>
+    <select id="findByAplicant" resultMap="timetableMap">
+       SELECT t.id,t.weekscount,t.teacher,t.phases,t.curriculum,t.week,t.classes,
+        m.id as mid,m.name as mname from t_timetable t
+        left join t_machineroom m on machineId=m.id where week=#{week} and m.name=#{mname} AND phases=#{phases}
+    </select>
+</mapper>

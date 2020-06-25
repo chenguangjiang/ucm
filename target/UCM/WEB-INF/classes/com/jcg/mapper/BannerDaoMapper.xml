@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jcg.dao.BannerDao">
+    <select id="findAll" resultType="Banner">
+         select id,title,url,href,ldate,ldesc,lstatus from t_banner
+    </select>
+
+    <select id="findById" resultType="Banner">
+        select id,title,url,href,ldate,ldesc,lstatus from t_banner where id=#{id}
+    </select>
+    <insert id="save">
+       insert into t_banner VALUES (#{id},#{title},#{url},#{href},#{ldate},
+       #{ldesc},#{lstatus})
+    </insert>
+    <delete id="delete">
+        delete from t_banner where id=#{id}
+    </delete>
+    <update id="update">
+        UPDATE t_banner set title=#{title}
+        ,url=#{url},href=#{href},ldate=#{ldate},ldesc=#{ldesc},
+        lstatus=#{lstatus} where id=#{id}
+    </update>
+
+
+    <select id="findTotalCounts" resultType="Long">
+        select count(id) from t_banner
+    </select>
+    <select id="findByPage"  resultType="Banner">
+        select id,title,url,href,ldate,ldesc,lstatus from t_banner
+
+        limit #{start},#{size}
+    </select>
+
+    <select id="findSearch"  resultType="Banner">
+        select id,title,url,href,ldate,ldesc,lstatus from t_banner
+        <where>
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+
+        limit #{start},#{size}
+    </select>
+    <select id="findTotalCountsSearch" resultType="Long">
+        select count(id) from t_banner
+        <where>
+
+            <if test="searchOper=='eq'">
+                ${searchField}=#{searchString}
+            </if>
+            <if test="searchOper=='ne'">
+                ${searchField}!=#{searchString}
+            </if>
+            <if test="searchOper=='cn'">
+                ${searchField} like concat ('%',#{searchString},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

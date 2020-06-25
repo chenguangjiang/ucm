@@ -1,0 +1,36 @@
+server:
+  port: 8989
+  context-path: /ucm
+  jsp-servlet:
+    init-parameters:
+      development: true #jsp开发模式部署 支持热部署
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.157.129:3306/ucm?characterEncoding=utf-8
+    username: root
+    password: root
+  redis:
+    host: 101.37.14.35
+    database: 0
+    port: 7000
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+  http:
+    multipart:
+      max-request-size: 2097152000
+      max-file-size: 2097152000 #2g
+mybatis:
+  mapper-locations: classpath:com/jcg/mapper/*.xml
+  type-aliases-package: com.jcg.entity
+
+
+
